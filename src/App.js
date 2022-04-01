@@ -6,6 +6,8 @@ import InfluencerMakerManager from "./model/InfluencerMakerManager.js";
 
 import "./App.css";
 
+
+let count =0;
 function App() {
   const imm = new InfluencerMakerManager();
 

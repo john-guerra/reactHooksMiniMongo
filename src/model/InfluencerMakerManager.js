@@ -1,28 +1,20 @@
 import minimongo from "minimongo";
 
-const IndexedDb = minimongo.IndexedDb;
+export default function InfluencerMakerManager(dbName = "IMMDB") {
+  const IndexedDb = minimongo.IndexedDb;
 
-function InfluencerMakerManager(_dbName = "InfluencerMakerDB") {
+  // The public instance that we will return
   const imm = {};
 
-  const dbName = _dbName;
-
-  /**
-   * Query the database for ideas
-   * @param  {Object} query   a mongo query
-   * @param  {Object} options query options see minimongo
-   */
-  imm.getIdeas = (query = {}, options = {}) => {
+  imm.getIdeas = function (query = {}) {
     return new Promise((resolve, reject) => {
-      // Create IndexedDb
       const db = new IndexedDb(
         { namespace: dbName },
         function () {
-          // Add a collection to the database
           db.addCollection(
             "ideas",
             function () {
-              db.ideas.find(query, options).fetch(resolve, reject);
+              db.ideas.find(query).fetch(resolve, reject);
             },
             reject
           );
@@ -32,17 +24,15 @@ function InfluencerMakerManager(_dbName = "InfluencerMakerDB") {
     });
   };
 
-  imm.createIdea = (idea) => {
+  imm.createIdea = function (newIdea) {
     return new Promise((resolve, reject) => {
-      // Create IndexedDb
       const db = new IndexedDb(
         { namespace: dbName },
         function () {
-          // Add a collection to the database
           db.addCollection(
             "ideas",
             function () {
-              db.ideas.upsert(idea, resolve, reject);
+              db.ideas.upsert(newIdea,  resolve, reject);
             },
             reject
           );
@@ -52,17 +42,15 @@ function InfluencerMakerManager(_dbName = "InfluencerMakerDB") {
     });
   };
 
-  imm.removeIdea = (idea) => {
+  imm.removeIdea = function (oldIdea) {
     return new Promise((resolve, reject) => {
-      // Create IndexedDb
       const db = new IndexedDb(
         { namespace: dbName },
         function () {
-          // Add a collection to the database
           db.addCollection(
             "ideas",
             function () {
-              db.ideas.remove(idea, resolve, reject);
+              db.ideas.remove(oldIdea, resolve, reject);
             },
             reject
           );
@@ -71,8 +59,8 @@ function InfluencerMakerManager(_dbName = "InfluencerMakerDB") {
       );
     });
   };
+
 
   return imm;
 }
 
-export default InfluencerMakerManager;
