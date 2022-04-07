@@ -6,9 +6,12 @@ import CreateIdeaForm from "../components/CreateIdeaForm.js";
 
 const MainPage = ({ imm }) => {
   const [ideas, setIdeas] = useState([]);
+  const [minDate, setMinDate] = useState(new Date());
 
   async function reloadIdeas() {
-    let dbIdeas = await imm.getIdeas();
+    let dbIdeas = await imm.getIdeas({
+      createdAt: { $gt: minDate },
+    });
 
     setIdeas([...dbIdeas]);
   }
@@ -18,7 +21,7 @@ const MainPage = ({ imm }) => {
     return () => {
       console.log("The component was destroyed");
     };
-  }, []);
+  }, [minDate]);
 
   async function onCreateIdea(newIdea) {
     console.log("On Create Idea");
@@ -38,7 +41,25 @@ const MainPage = ({ imm }) => {
         ideas={ideas}
         onCreateIdea={onCreateIdea}
       ></CreateIdeaForm>
-      <IdeasPanel ideas={ideas} onDeleteIdea = {onDeleteIdea}></IdeasPanel>
+
+      <h3>Filter</h3>
+      <label className="form-label">
+        Min Date:{" "}
+        <input
+          type="date"
+          className="form-control"
+          value={minDate.toLocaleDateString()}
+          onChange={(evt) => {
+            console.log("change date", new Date(evt.target.value));
+
+            debugger;
+
+            setMinDate(new Date(evt.target.value));
+            }
+          }
+        />
+      </label>
+      <IdeasPanel ideas={ideas} onDeleteIdea={onDeleteIdea}></IdeasPanel>
     </div>
   );
 };
