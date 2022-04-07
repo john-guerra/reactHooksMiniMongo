@@ -6,7 +6,7 @@ import CreateIdeaForm from "../components/CreateIdeaForm.js";
 
 const MainPage = ({ imm }) => {
   const [ideas, setIdeas] = useState([]);
-  const [minDate, setMinDate] = useState(new Date());
+  const [minDate, setMinDate] = useState(null);
 
   async function reloadIdeas() {
     let dbIdeas = await imm.getIdeas({
@@ -48,15 +48,10 @@ const MainPage = ({ imm }) => {
         <input
           type="date"
           className="form-control"
-          value={minDate.toLocaleDateString()}
+          value={minDate?.toLocaleDateString()}
           onChange={(evt) => {
-            console.log("change date", new Date(evt.target.value));
-
-            debugger;
-
             setMinDate(new Date(evt.target.value));
-            }
-          }
+          }}
         />
       </label>
       <IdeasPanel ideas={ideas} onDeleteIdea={onDeleteIdea}></IdeasPanel>
